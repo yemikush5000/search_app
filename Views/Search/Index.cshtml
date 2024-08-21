@@ -1,0 +1,45 @@
+@page
+@model search_app.Pages.IndexModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Application</title>
+</head>
+<body id="app">
+    <h2>Search App</h2>
+    <div id="searchResult"></div>
+    <form class="container" id="searchForm" method="post" action="/submit">
+        <label for="search">Search Entry</label><br>
+        <input type="text" id="search" name="searchText"><br>
+        <input type="submit" id="submit" value="Submit">
+    </form>
+</body>
+<script>
+    document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevents the default form submission
+
+        const searchText = document.getElementById("search").value.trim();
+        const _para = document.getElementById("searchResult");
+
+        // Sending a POST request to the server using fetch API
+        fetch("/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({ searchText: searchText })
+        })
+        .then(response => response.text()) // Assuming the server sends back text data
+        .then(data => {
+            _para.innerHTML = `Search Result: ${data}`;
+            _para.style.color = "red";
+        })
+        .catch(error => {
+            _para.innerHTML = "An error occurred while fetching the data.";
+            _para.style.color = "red";
+        });
+    });
+</script>
+</html>
